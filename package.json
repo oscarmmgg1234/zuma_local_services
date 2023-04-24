@@ -1,0 +1,20 @@
+{
+  "name": "zuma_employee_api",
+  "version": "1.0.0",
+  "description": "employee api",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "oscar maldonado",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "date-and-time": "^2.4.2",
+    "express": "^4.18.2",
+    "html-pdf": "^3.0.1",
+    "mysql": "^2.18.1",
+    "pdf-creator-node": "^2.3.5"
+  }
+}
