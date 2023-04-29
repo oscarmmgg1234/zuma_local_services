@@ -1,9 +1,12 @@
-const {generate_pdf, get_json_employee_data, get_zuma_employees, insert_start_shift, insert_end_shift} 
+const {generate_pdf, get_json_employee_data, get_zuma_employees, insert_start_shift, insert_end_shift, generate_pdf_all} 
 = require('../employee_api_wrapper')
 
 class employee {
-    async gen_pdf(args){
-        generate_pdf(args);
+    async gen_pdf(args,path){
+        generate_pdf(args,path);
+    }
+    async gen_pdf_all(args){
+        generate_pdf_all(args);
     }
     e_json_data(args,callback){
         return callback(get_json_employee_data(args));

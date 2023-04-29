@@ -154,7 +154,7 @@ tr{
 <div id="main_header"> EMPLOYEE TIME-SHEET</div>
 
 
-<div id="wekkof">Week Range: Mar 01 2023 - {{employee.SHIFT_END}}</div>
+<div id="wekkof">Week Range: {{employee.SHIFT_START}} - {{employee.SHIFT_END}}</div>
 
 <div id="name">Employee Name: {{employee.NAME}}</div>
 
@@ -187,6 +187,7 @@ tr{
 
 </div>
 <div id="spacer"></div>
+<div id="thours">Todal Days: {{employee.SHIFT_DAYS}}</div>
 <div id="thours">Total Hours: {{employee.SHIFT_HOURS}}</div>
 <div id="tohours">Total Overtime Hours: {{employee.SHIFT_OTHOURS}}</div>
 <div class="footerContainer">

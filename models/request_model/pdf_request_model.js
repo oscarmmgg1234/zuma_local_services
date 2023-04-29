@@ -9,7 +9,17 @@ class pdf_request_model {
         this.e_id = args[2] ? args[2] : null;
     }
     validate(){
-        if(this.range_start == null || this.range_end == null || this.e_id == null || this.range_start == "" || this.range_end == "" || this.e_id == "" ){
+        const start_date = new Date(this.range_start)
+        const end_date = new Date(this.range_end)
+        if(this.range_start == null || this.range_end == null || this.e_id == null || this.range_start == "" || this.range_end == "" || this.e_id == "" || isNaN(start_date) || isNaN(end_date) ){
+            return false;
+        }
+        return true;
+    }
+    validate_multiple(){
+        const start_date = new Date(this.range_start)
+        const end_date = new Date(this.range_end)
+        if(this.range_start == null || this.range_end == null || this.range_start == "" || this.range_end == "" || isNaN(start_date) || isNaN(end_date) ){
             return false;
         }
         return true;

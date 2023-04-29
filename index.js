@@ -29,7 +29,14 @@ server.use('/EmployeeResourcesAPI/Generate_Time_sheet', (req,res,next)=>{
   else
   res.send("request invalid").end();
 })
-
+server.use('/EmployeeResourcesAPI/Generate_Time_sheet_all', (req,res,next)=>{
+  request_model.pdf_r_model(req.body, (data)=>{req.request_model = data})
+  if(req.request_model.validate_multiple()){
+    next();
+  }
+  else
+  res.send("request invalid").end();
+})
 server.use('/EmployeeResourcesAPI/GPETS', (req,res,next)=>{
   req.request_model = request_model.e_r_model(req.body);
   if(req.request_model.validate()){
@@ -51,10 +58,17 @@ server.use('/EmployeeResourcesAPI/GPETS', (req,res,next)=>{
 
  
  server.post('/EmployeeResourcesAPI/Generate_Time_sheet', async (req, res)=>{
-  await Employee.gen_pdf(req.request_model);
-  setTimeout(()=>{var data =fs.readFileSync('./output.pdf');
+  await Employee.gen_pdf(req.request_model, "./generatedOutput/output.pdf");
+  setTimeout(()=>{var data =fs.readFileSync('./generatedOutput/output.pdf');
   res.contentType("application/pdf");
-  res.send(data);}, 1000)
+  res.send(data);}, 3000)
+})
+
+server.post('/EmployeeResourcesAPI/Generate_Time_sheet_all', async (req, res)=>{
+  await Employee.gen_pdf_all(req.request_model);
+  setTimeout(()=>{var data =fs.readFileSync('./generatedOutput/merged.pdf');
+  res.contentType("application/pdf");
+  res.send(data);}, 4100)
 })
 
  server.post('/EmployeeResourcesAPI/StartShift',(req,res)=>{

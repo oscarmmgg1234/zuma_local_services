@@ -2,6 +2,11 @@ const {db_init} = require('./db_init')
 const date = require('date-and-time')
 const fs = require('fs')
 var pdf = require("pdf-creator-node");
+const { PDFDocument, StandardFonts } = require('pdf-lib');
+
+const { request } = require('../models/models_interface/request_interface');
+
+const req = new request()
 
 var html = fs.readFileSync("./html_templates/time_sheet.html", "utf8");
 
@@ -9,12 +14,13 @@ const db = db_init();
 db.connect();
 
 const querys = {
+get_all_time_sheet: "SELECT EMPLOYEE_ID, COUNT(*) OVER() AS count FROM EMPLOYEE",
 get_employees: "SELECT EMPLOYEE_ID,NAME FROM EMPLOYEE", 
 get_count_shift_entry: "SELECT COUNT(*) AS entryCount FROM SHIFT_LOG WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
 insert_shift_employee: "INSERT INTO SHIFT_LOG(EMPLOYEE_ID,SHIFT_START,SHIFT_DATE) VALUES (?,?,?)",
 insert_shift_end_employee: "UPDATE SHIFT_LOG SET SHIFT_END = ? WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
 get_specific_employee_info: "SELECT * FROM EMPLOYEE WHERE EMPLOYEE_ID = ?",
-get_shift_log: "SELECT * FROM SHIFT_LOG WHERE SHIFT_DATE BETWEEN ? AND ? AND EMPLOYEE_ID = ?"
+get_shift_log: "SELECT * FROM SHIFT_LOG WHERE SHIFT_DATE >= ? AND SHIFT_DATE <= ? AND EMPLOYEE_ID = ?"
 }
 
 const insertStartShiftTimeSlot = (args) => {
@@ -55,6 +61,7 @@ const getEmployee_formatted = (args) => {
     const date_pattern = date.compile('MMM DD YYYY');
     const date_pattern_shift = date.compile('hh:mm A');
     db.query(querys.get_shift_log,args.map(),function (err, result, fields) {
+        
         output = Object.values(JSON.parse(JSON.stringify(result))).map((val,index)=>{
         const fullTime = 40;
         date1 = new Date(val.SHIFT_START)
@@ -72,43 +79,87 @@ const getEmployee_formatted = (args) => {
   })
 }
 
-const GeneratePDF = (args) => {
-  return new Promise(async (Resolve)=>{var TotalHours = 0;
-    var TotalOTHours = 0;
-    current_file_path = "./output.pdf"
-    var data = await getEmployee_formatted(args);
-    var employee_data = await getEmployeeInfo(args.e_id);
-    data.forEach((val)=>{TotalHours += parseFloat(val.SHIFT_HOURS); TotalOTHours += parseFloat(val.SHIFT_OTHOURS)})
-    const pattern = date.compile('MMM DD YYYY')
-    const date1 = new Date(args.shift_start);
-    const date2 = new Date(args.shift_end);
-    employee_data[0].SHIFT_START = date.format(date1, pattern)
-    employee_data[0].SHIFT_END = date.format(date2, pattern)
-    employee_data[0].SHIFT_HOURS = TotalHours;
-    employee_data[0].SHIFT_OTHOURS = TotalOTHours;
-    employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
+
+const GeneratePDF = (args,path) => {
+  return new Promise(async (Resolve)=>{
+      
+      var data = await getEmployee_formatted(args);
+      var employee_data = await getEmployeeInfo(args.e_id);
+      var Days = 0;
+      var TotalHours = 0;
+      var TotalOTHours = 0;
+      data.forEach((val)=>{TotalHours += parseFloat(val.SHIFT_HOURS); TotalOTHours += parseFloat(val.SHIFT_OTHOURS); Days = Days + 1;})
+      const pattern = date.compile('MMM DD YYYY')
+      const date1 = date.addDays(new Date(args.range_start),1);
+      const date2 = date.addDays(new Date(args.range_end),1);
+
+      employee_data[0].SHIFT_START = date.format(date1, pattern)
+      employee_data[0].SHIFT_END = date.format(date2, pattern)
+      employee_data[0].SHIFT_HOURS = TotalHours;
+      employee_data[0].SHIFT_OTHOURS = TotalOTHours;
+      employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
+      employee_data[0].SHIFT_DAYS = Days;
+      
+      var document = {
+        data: {employeeData: data, employee: employee_data[0]},
+        html: html,
+        path: path,
+        type: "",
+      };
+        var options = {
+        format: "Letter",
+        orientation: "portrait",
+        border: "5mm"
+      };
+        pdf
+      .create(document, options)
+      .then((res) => {
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      
+      Resolve();
+      })}
+
+
+const generate_all_time_sheets = async (args) =>{
+  var file_counter = 1;
+  var files = [];
+  files.push("./generatedOutput/output0.pdf")
+  db.query(querys.get_all_time_sheet,(err,result)=>{
+    const res = Object.values(JSON.parse(JSON.stringify(result)));
+    req.pdf_r_model({shift_start_range: args.range_start, shift_end_range: args.range_end,employee_id: res[0].EMPLOYEE_ID},(data)=>{GeneratePDF(data,'./generatedOutput/output0.pdf');})
+      const intervalID = setInterval(()=>{
+        if(file_counter == res[0].count){
+          
+          clearInterval(intervalID)
+      
+        }
+        else{
+      var path = `./generatedOutput/output${file_counter}.pdf`;
+      files.push(path);
+      req.pdf_r_model({shift_start_range: args.range_start, shift_end_range: args.range_end,employee_id: res[file_counter].EMPLOYEE_ID},(data)=>{GeneratePDF(data,path);})
+      file_counter = file_counter + 1;
+        }
+      
+  }, 600)
+  setTimeout(()=>{merge_pdf(files)}, res[0].count*600)
+  })}
+
+  const merge_pdf = async (files)=>{
+    const mergedPdf = await PDFDocument.create();
+    for (let i = 0; i < files.length; i++) {
+      const fileContents = fs.readFileSync(files[i]);
+      const pdf = await PDFDocument.load(fileContents);
     
-      var options = {
-      format: "Letter",
-      orientation: "portrait",
-      border: "5mm"
-    };
-    var document = {
-      data: {employeeData: data, employee: employee_data[0]},
-      html: html,
-      path: current_file_path,
-      type: "",
-    };
-      pdf
-    .create(document, options)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((error) => {
-      console.error(error);
-    });Resolve();})
-  
-}
+      const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      pages.forEach((page) => mergedPdf.addPage(page));
+    }
+    const mergedPdfBytes = await mergedPdf.save();
+    fs.writeFileSync('./generatedOutput/merged.pdf', mergedPdfBytes);
+  }
+
 
 const getEmployees = () => {
   return new Promise((resolve)=>{
@@ -125,3 +176,4 @@ exports.insertStartShiftTime = insertStartShiftTimeSlot;
 exports.insertEndShiftTime = insertEndShiftTimeSlot;
 exports.getZumaEmployees = getEmployees;
 exports.getJsonEmployeeData = getEmployee_formatted;
+exports.GeneratePDF_ALL = generate_all_time_sheets;
