@@ -1,4 +1,4 @@
-const {pdfRequestModel_Wrapper, employeeRequestModel_Wrapper}
+const {pdfRequestModel_Wrapper, employeeRequestModel_Wrapper, previewShift_Wrapper}
  = require('../models_wrapper/request_model_wrapper')
 
 class request{
@@ -7,6 +7,9 @@ class request{
     }
     e_r_model(args){
         return employeeRequestModel_Wrapper(args);
+    }
+    preview_s(args,callback){
+        return callback(previewShift_Wrapper(args))
     }
 }
 

@@ -21,6 +21,22 @@ bodyParser.urlencoded({extended: false});
 server.use(bodyParser.json());
 
 //middleware
+server.use('/EmployeeResourcesAPI/PreviewTansformStartShift', (req,res,next)=>{
+  request_model.preview_s(req.body, (data)=>{req.request_model=data})
+  if(req.request_model.validate()){
+    next();
+  }
+  else
+  res.send("request invalid").end()
+})
+server.use('/EmployeeResourcesAPI/PreviewTansformEndShift', (req,res,next)=>{
+  request_model.preview_s(req.body, (data)=>{req.request_model=data})
+  if(req.request_model.validate()){
+    next();
+  }
+  else
+  res.send("request invalid").end()
+})
 server.use('/EmployeeResourcesAPI/Generate_Time_sheet', (req,res,next)=>{
   request_model.pdf_r_model(req.body, (data)=>{req.request_model = data})
   if(req.request_model.validate()){
@@ -49,7 +65,7 @@ server.use('/EmployeeResourcesAPI/GPETS', (req,res,next)=>{
 
 //methods
  server.post('/EmployeeResourcesAPI/Zuma_Employees', async (req,res)=>{
-  res.send(await get_zuma_employees());
+  await Employee.g_z_employees((data)=>{res.send(data)});
 })
 
  server.post('/EmployeeResourcesAPI/GPETS',async (req,res) => {
@@ -81,6 +97,24 @@ server.post('/EmployeeResourcesAPI/Generate_Time_sheet_all', async (req, res)=>{
   res.send("okay")
 })
 
+server.post('/EmployeeResourcesAPI/TansformEndShift', (req,res)=>{
+  res.send("okay");
+})
+
+server.post('/EmployeeResourcesAPI/TansformStartShift', (req,res)=>{
+  res.send("okay");
+})
+
+server.post('/EmployeeResourcesAPI/RemoveShift', (req,res)=>{
+
+})
+
+server.post('/EmployeeResourcesAPI/PreviewTansformStartShift', async (req,res)=>{
+  await Employee.prev_s_s(req.request_model,(data)=>{res.send(data)})
+})
+server.post('/EmployeeResourcesAPI/PreviewTansformEndShift', async (req,res)=>{
+  await Employee.prev_e_s(req.request_model,(data)=>{res.send(data)})
+})
 
 
 
