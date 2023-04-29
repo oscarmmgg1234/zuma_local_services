@@ -191,7 +191,7 @@ const previewTransformEndShift = (args) =>{
 
         if(date.format(new Date(dateObj.SHIFT_DATE),date_entry_pattern).toString()== date.format(newStart,date_entry_pattern).toString()){
           const newDate = date.addHours(new Date(dateObj.SHIFT_END),args.hours)
-          const inpt = date.format(newDate,"YYYY-MM-DD HH:mm")
+          const inpt = date.format(newDate,output_entry_pattern)
           return {SHIFT_END: inpt,SHIFT_CHANGE: true,
           SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),
           SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
@@ -214,43 +214,48 @@ const previewTransformEndShift = (args) =>{
 
 
 
-const previewTransformStartShift = () =>{
-  return new Promise(resolve=>{
-  const date_entry_pattern = date.compile('YYYY-MM-DD');
-  const output_entry_pattern = date.compile('YYYY-MM-DD HH:mm')
+const previewTransformStartShift = (args) =>{
+ 
+  return new Promise((resolve)=>{
+    const date_entry_pattern = date.compile('YYYY-MM-DD');
+    const output_entry_pattern = date.compile('YYYY-MM-DD HH:mm')
 
-  const start = new Date(args.date);
-  const range_start = date.addDays(start, 2);
-  const range_end = date.addDays(start, -2)
+    const start = new Date(args.date);
+    const range_start = date.addDays(start, 2);
+    const range_end = start;
 
 
-  db.query(querys.get_shift_log, [date.format(range_end, date_entry_pattern), date.format(range_start, date_entry_pattern), args.e_id], (err,result)=>{
-    const data = Object.values(JSON.parse(JSON.stringify(result)));
-    const newStart = date.addDays(start, 1);
-    const date_res = data.map((dateObj)=>{
+    db.query(querys.get_shift_log, [date.format(range_end, date_entry_pattern), date.format(range_start, date_entry_pattern), args.e_id], (err,result)=>{
+      const data = Object.values(JSON.parse(JSON.stringify(result)));
+      const newStart = date.addDays(start, 1);
+      const date_res = data.map((dateObj)=>{
 
-      if(date.format(new Date(dateObj.SHIFT_DATE),date_entry_pattern).toString()== date.format(newStart,date_entry_pattern).toString()){
-        const newDate = date.addHours(new Date(dateObj.SHIFT_START),args.hours)
-        const inpt = date.format(newDate,"YYYY-MM-DD HH:mm")
-        return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END)),
-        SHIFT_START: inpt,SHIFT_CHANGE: true,
+        if(date.format(new Date(dateObj.SHIFT_DATE),date_entry_pattern).toString()== date.format(newStart,date_entry_pattern).toString()){
+          const newDate = date.addHours(new Date(dateObj.SHIFT_START),args.hours)
+          const inpt = date.format(newDate,output_entry_pattern)
+          return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),SHIFT_CHANGE: true,
+          SHIFT_START: inpt,
+          SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
+          };
+        }
+        else{
+        return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),
+        SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),
         SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
         };
       }
-      else{
-      return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),
-      SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),
-      SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
-      };
-    }
+      })
+      resolve(date_res)
     })
-    resolve(date_res)
   })
-})
 }
 
 const transformEndShift = () =>{
 
+}
+
+const transformStartShift = () => {
+  
 }
 
 
