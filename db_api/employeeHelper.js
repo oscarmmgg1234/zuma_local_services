@@ -181,7 +181,8 @@ const previewTransformEndShift = (args) =>{
     const date_entry_pattern = date.compile('YYYY-MM-DD');
     const output_entry_pattern = date.compile('YYYY-MM-DD HH:mm')
 
-    const start = new Date(args.date);
+    const tempstart = new Date(args.date);
+    const start = date.addDays(tempstart, -1);
     const range_start = date.addDays(start, 2);
     const range_end = start;
 
@@ -223,7 +224,8 @@ const previewTransformStartShift = (args) =>{
     const date_entry_pattern = date.compile('YYYY-MM-DD');
     const output_entry_pattern = date.compile('YYYY-MM-DD HH:mm')
 
-    const start = new Date(args.date);
+    const tempstart = new Date(args.date);
+    const start = date.addDays(tempstart, -1);
     const range_start = date.addDays(start, 2);
     const range_end = start;
 
