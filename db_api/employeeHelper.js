@@ -151,7 +151,7 @@ const generate_all_time_sheets = async (args) =>{
         }
       
   }, 600)
-  setTimeout(()=>{merge_pdf(files)}, res[0].count*600)
+  setTimeout(()=>{merge_pdf(files)}, res[0].count*650)
   })}
 
   const merge_pdf = async (files)=>{

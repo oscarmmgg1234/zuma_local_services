@@ -114,7 +114,7 @@ server.post('/EmployeeResourcesAPI/Generate_Time_sheet_all', async (req, res)=>{
   await Employee.gen_pdf_all(req.request_model);
   setTimeout(()=>{var data =fs.readFileSync('./generatedOutput/merged.pdf');
   res.contentType("application/pdf");
-  res.send(data);}, 4100)
+  res.send(data);}, 4250)
 })
 
  server.post('/EmployeeResourcesAPI/StartShift',(req,res)=>{
