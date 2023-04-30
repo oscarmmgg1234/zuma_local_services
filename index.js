@@ -2,7 +2,6 @@ const express = require('express')
 const  server = express()
 const env_data = require("./env.json")
 const cors = require('cors');
-const app = express();
 const path = require("path")
 const fs = require("fs");
 const {request} = require("./models/models_interface/request_interface")
@@ -19,7 +18,7 @@ const Employee = new employee();
 server.timeout = env_data.server_timeout
 bodyParser.urlencoded({extended: false});
 server.use(bodyParser.json());
-app.use(cors());
+server.use(cors());
 
 //middleware
 server.use('/EmployeeResourcesAPI/RemoveShift', (req,res,next)=>{
