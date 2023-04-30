@@ -60,7 +60,6 @@ server.use('/EmployeeResourcesAPI/PreviewTansformStartShift', (req,res,next)=>{
   res.send("request invalid").end()
 })
 server.use('/EmployeeResourcesAPI/PreviewTansformEndShift', (req,res,next)=>{
-  console.log(req.body)
   request_model.preview_s(req.body, (data)=>{req.request_model=data})
   if(req.request_model.validate()){
     next();

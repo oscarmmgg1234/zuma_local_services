@@ -17,7 +17,7 @@ class preview_request_model {
     }
 }
 const PreviewRequestModel = (args) =>{
-    return new preview_request_model([args.date, args.hours, args.e_id]);  
+    return new preview_request_model([args.date, parseInt(args.hours), args.e_id]);  
 }
 
 
