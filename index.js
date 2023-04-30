@@ -1,7 +1,7 @@
 const express = require('express')
 const  server = express()
 const env_data = require("./env.json")
-const https = require("https");
+
 const path = require("path")
 const fs = require("fs");
 const {request} = require("./models/models_interface/request_interface")
@@ -13,7 +13,6 @@ const sslOptions = {
   cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem')),
 };
 
-const sslServer = https.createServer(sslOptions, server);
 const request_model = new request();
 const Employee = new employee();
 server.timeout = env_data.server_timeout
@@ -153,6 +152,6 @@ server.post('/EmployeeResourcesAPI/PreviewTansformEndShift', async (req,res)=>{
 
 
 //poll
-sslServer.listen(env_data.server_port, () => {
+server.listen(env_data.server_port, () => {
     console.log(`Example  server listening on port ${env_data.server_port}`)
 })
