@@ -1,4 +1,5 @@
-const {generate_pdf, get_json_employee_data, get_zuma_employees, insert_start_shift, insert_end_shift, generate_pdf_all, previewEndShift, previewStartShift} 
+const {generate_pdf, get_json_employee_data, get_zuma_employees, insert_start_shift, insert_end_shift, generate_pdf_all, previewEndShift, previewStartShift,
+transformEndShift, transformStartShift, removeShift} 
 = require('../employee_api_wrapper')
 
 class employee {
@@ -25,6 +26,18 @@ class employee {
     }
     async prev_s_s(args, callback){
         return callback(await previewStartShift(args))
+    }
+
+    trans_e_s(args){
+        transformEndShift(args);
+    }
+
+    trans_s_s(args){
+        transformStartShift(args);
+    }
+
+    rm_shift(args){
+        removeShift(args);
     }
 }
 

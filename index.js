@@ -21,6 +21,36 @@ bodyParser.urlencoded({extended: false});
 server.use(bodyParser.json());
 
 //middleware
+server.use('/EmployeeResourcesAPI/RemoveShift', (req,res,next)=>{
+  request_model.remove_s(req.body, (data)=>{req.request_model=data})
+  if(req.request_model.validate()){
+    next()
+  }
+  else{
+    res.send("request invalid").end()
+  }
+})
+
+server.use('/EmployeeResourcesAPI/TansformEndShift', (req,res,next)=>{
+  request_model.preview_s(req.body, (data)=>{req.request_model=data})
+  if(req.request_model.validate()){
+    next()
+  }
+  else{
+    res.send("request invalid").end()
+  }
+})
+
+server.use('/EmployeeResourcesAPI/TansformStartShift', (req,res,next)=>{
+  request_model.preview_s(req.body, (data)=>{req.request_model=data})
+  if(req.request_model.validate()){
+    next()
+  }
+  else{
+    res.send("request invalid").end()
+  }
+})
+
 server.use('/EmployeeResourcesAPI/PreviewTansformStartShift', (req,res,next)=>{
   request_model.preview_s(req.body, (data)=>{req.request_model=data})
   if(req.request_model.validate()){
@@ -98,15 +128,18 @@ server.post('/EmployeeResourcesAPI/Generate_Time_sheet_all', async (req, res)=>{
 })
 
 server.post('/EmployeeResourcesAPI/TansformEndShift', (req,res)=>{
-  res.send("okay");
+  Employee.trans_e_s(req.request_model);
+  res.send("upated")
 })
 
 server.post('/EmployeeResourcesAPI/TansformStartShift', (req,res)=>{
-  res.send("okay");
+  Employee.trans_s_s(req.request_model);
+  res.send("updated");
 })
 
 server.post('/EmployeeResourcesAPI/RemoveShift', (req,res)=>{
-
+    Employee.rm_shift(req.request_model);
+    res.send("removed entry")
 })
 
 server.post('/EmployeeResourcesAPI/PreviewTansformStartShift', async (req,res)=>{

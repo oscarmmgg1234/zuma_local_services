@@ -21,10 +21,12 @@ insert_shift_employee: "INSERT INTO SHIFT_LOG(EMPLOYEE_ID,SHIFT_START,SHIFT_DATE
 insert_shift_end_employee: "UPDATE SHIFT_LOG SET SHIFT_END = ? WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
 get_specific_employee_info: "SELECT * FROM EMPLOYEE WHERE EMPLOYEE_ID = ?",
 get_shift_log: "SELECT * FROM SHIFT_LOG WHERE SHIFT_DATE >= ? AND SHIFT_DATE <= ? AND EMPLOYEE_ID = ?",
+get_specific_s_log: "SELECT * FROM SHIFT_LOG WHERE SHIFT_DATE = ? AND EMPLOYEE_ID = ?",
 remove_shift_log: "DELETE FROM SHIFT_LOG WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
 transform_start_shift_log: "UPDATE SHIFT_LOG SET SHIFT_START = ? WHERE EMPLOYEE_ID = ?",
-transform_end_shift_log: "UPDATE SHIFT_LOG SET SHIFT_END = ? WHERE EMPLOYEE_ID = ?",
-
+transform_end_shift_log: "UPDATE SHIFT_LOG SET SHIFT_END = ? WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
+transform_start_shift_log: "UPDATE SHIFT_LOG SET SHIFT_START = ? WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
+remove_shift_log: "DELETE FROM SHIFT_LOG WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
 }
 
 const insertStartShiftTimeSlot = (args) => {
@@ -250,15 +252,57 @@ const previewTransformStartShift = (args) =>{
   })
 }
 
-const transformEndShift = () =>{
+const transformEndShift = (args) =>{
+  const date_pattern = date.compile("YYYY-MM-DD");
+  const entry_date = new Date(args.date);
+  const newDate = date.addDays(entry_date,1);
 
+  db.query(querys.get_specific_s_log,[date.format(newDate,date_pattern),args.e_id],(err, result)=>{
+    const data = Object.values(JSON.parse(JSON.stringify(result)));
+    if(data.length == 0){
+      
+    }
+    else{
+      const shift_date = new Date(data[0].SHIFT_END);
+      const upated_date = date.addHours(shift_date, args.hours)
+      db.query(querys.transform_end_shift_log, [upated_date,args.e_id,date.format(newDate, date_pattern)],(err,result)=>{
+        
+     })
+    }
+  })
 }
+  
 
-const transformStartShift = () => {
+const transformStartShift = (args) => {
+
+  const date_pattern = date.compile("YYYY-MM-DD");
+  const entry_date = new Date(args.date);
+  const newDate = date.addDays(entry_date,1);
+
+  db.query(querys.get_specific_s_log,[date.format(newDate,date_pattern),args.e_id],(err, result)=>{
+    const data = Object.values(JSON.parse(JSON.stringify(result)));
+    if(data.length == 0){
+      
+    }
+    else{
+      const shift_date = new Date(data[0].SHIFT_START);
+      const upated_date = date.addHours(shift_date, args.hours)
+      db.query(querys.transform_start_shift_log, [upated_date,args.e_id,date.format(newDate, date_pattern)],(err,result)=>{
+        
+     })
+    }
+  })
   
 }
 
+const removeShift = (args) => {
+  const date_pattern = date.compile('YYYY-MM-DD')
+  const entry_date = new Date(args.date);
+  const newDate = date.addDays(entry_date,1);
+  db.query(querys.remove_shift_log, [args.e_id, date.format(newDate,date_pattern)],(err,result)=>{
 
+  })
+}
 
 
 exports.GeneratePDF = GeneratePDF;
@@ -270,3 +314,6 @@ exports.getJsonEmployeeData = getEmployee_formatted;
 exports.GeneratePDF_ALL = generate_all_time_sheets;
 exports.PreviewEndTransformation = previewTransformEndShift;
 exports.PreviewStartTransformation = previewTransformStartShift;
+exports.transformStartShift = transformStartShift;
+exports.transformEndShift = transformEndShift;
+exports.removeShift = removeShift;

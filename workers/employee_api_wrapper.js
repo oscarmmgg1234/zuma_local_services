@@ -2,9 +2,21 @@
 const {
   GeneratePDF, getEmployeeInfo, 
   insertStartShiftTime, insertEndShiftTime, getZumaEmployees,
-  getJsonEmployeeData, GeneratePDF_ALL, PreviewEndTransformation, PreviewStartTransformation}
+  getJsonEmployeeData, GeneratePDF_ALL, PreviewEndTransformation, PreviewStartTransformation,
+transformEndShift, transformStartShift, removeShift}
   = require("../db_api/employeeHelper");
 
+const remove_shift = (args) => {
+  removeShift(args);
+}
+
+const transform_end_shift = (args) => {
+  transformEndShift(args);
+}
+
+const transform_start_shift = (args) => {
+  transformStartShift(args);
+}
 
 const generate_timesheet_pdf_wrapper = async (args,path) => {
   GeneratePDF(args,path);
@@ -52,3 +64,6 @@ exports.get_json_employee_data = get_json_employeeData_wrapper;
 exports.generate_pdf_all = generate_time_all_wrapper;
 exports.previewEndShift = preview_end_shift;
 exports.previewStartShift = preview_start_shift;
+exports.transformEndShift = transform_end_shift;
+exports.transformStartShift = transform_start_shift;
+exports.removeShift = remove_shift;
