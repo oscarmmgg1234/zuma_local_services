@@ -202,6 +202,7 @@ const previewTransformEndShift = (args) =>{
         else{
         return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),
         SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),
+        SHIFT_CHANGE: false,
         SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
         };
       }
@@ -242,7 +243,7 @@ const previewTransformStartShift = (args) =>{
         }
         else{
         return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),
-        SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),
+        SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),SHIFT_CHANGE: false,
         SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
         };
       }
