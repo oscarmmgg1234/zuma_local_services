@@ -255,9 +255,47 @@ const previewTransformStartShift = (args) =>{
   })
 }
 
+const previewRemoveShift = (args) =>{
+ 
+  return new Promise((resolve)=>{
+    const date_entry_pattern = date.compile('YYYY-MM-DD');
+    const output_entry_pattern = date.compile('YYYY-MM-DD HH:mm')
+
+    const tempstart = new Date(args.date);
+    const start = date.addDays(tempstart, -1);
+    const range_start = date.addDays(start, 2);
+    const range_end = start;
+
+
+    db.query(querys.get_shift_log, [date.format(range_end, date_entry_pattern), date.format(range_start, date_entry_pattern), args.e_id], (err,result)=>{
+      const data = Object.values(JSON.parse(JSON.stringify(result)));
+      const newStart = date.addDays(start, 1);
+      const date_res = data.map((dateObj)=>{
+
+        if(date.format(new Date(dateObj.SHIFT_DATE),date_entry_pattern).toString()== date.format(newStart,date_entry_pattern).toString()){
+          return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),SHIFT_CHANGE: true,
+          SHIFT_START: date.format(new Date(dateObj.SHIFT_START)  , output_entry_pattern),
+          SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
+          };
+        }
+        else{
+        return {SHIFT_END: date.format(new Date(dateObj.SHIFT_END),output_entry_pattern),
+        SHIFT_START: date.format(new Date(dateObj.SHIFT_START), output_entry_pattern),SHIFT_CHANGE: false,
+        SHIFT_DATE: date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern),
+        };
+      }
+      })
+      resolve(date_res)
+    })
+  })
+}
+
+
+
 const transformEndShift = (args) =>{
   const date_pattern = date.compile("YYYY-MM-DD");
-  const entry_date = new Date(args.date);
+  const start_date = new Date(args.date);
+  const entry_date = date.addDays(start_date, -1);
   const newDate = date.addDays(entry_date,1);
 
   db.query(querys.get_specific_s_log,[date.format(newDate,date_pattern),args.e_id],(err, result)=>{
@@ -279,7 +317,8 @@ const transformEndShift = (args) =>{
 const transformStartShift = (args) => {
 
   const date_pattern = date.compile("YYYY-MM-DD");
-  const entry_date = new Date(args.date);
+  const start_date = new Date(args.date);
+  const entry_date = date.addDays(start_date, -1);
   const newDate = date.addDays(entry_date,1);
 
   db.query(querys.get_specific_s_log,[date.format(newDate,date_pattern),args.e_id],(err, result)=>{
@@ -300,7 +339,8 @@ const transformStartShift = (args) => {
 
 const removeShift = (args) => {
   const date_pattern = date.compile('YYYY-MM-DD')
-  const entry_date = new Date(args.date);
+  const start = new Date(args.date);
+  const entry_date = date.addDays(start, -1);
   const newDate = date.addDays(entry_date,1);
   db.query(querys.remove_shift_log, [args.e_id, date.format(newDate,date_pattern)],(err,result)=>{
 
@@ -320,3 +360,4 @@ exports.PreviewStartTransformation = previewTransformStartShift;
 exports.transformStartShift = transformStartShift;
 exports.transformEndShift = transformEndShift;
 exports.removeShift = removeShift;
+exports.PreviewRemoveShift = previewRemoveShift;

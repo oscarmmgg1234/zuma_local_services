@@ -3,11 +3,15 @@ const {
   GeneratePDF, getEmployeeInfo, 
   insertStartShiftTime, insertEndShiftTime, getZumaEmployees,
   getJsonEmployeeData, GeneratePDF_ALL, PreviewEndTransformation, PreviewStartTransformation,
-transformEndShift, transformStartShift, removeShift}
+transformEndShift, transformStartShift, removeShift, PreviewRemoveShift}
   = require("../db_api/employeeHelper");
 
 const remove_shift = (args) => {
   removeShift(args);
+}
+
+const preview_remove_shift = async (args) => {
+  return await PreviewRemoveShift(args);
 }
 
 const transform_end_shift = (args) => {
@@ -67,3 +71,4 @@ exports.previewStartShift = preview_start_shift;
 exports.transformEndShift = transform_end_shift;
 exports.transformStartShift = transform_start_shift;
 exports.removeShift = remove_shift;
+exports.previewRemoveShift = preview_remove_shift;
