@@ -86,7 +86,7 @@ const getEmployee_formatted = (args) => {
 }
 
 
-const GeneratePDF = (args,path) => {
+const GeneratePDF = async (args,path) => {
   return new Promise(async (Resolve)=>{
       
       var data = await getEmployee_formatted(args);
@@ -129,7 +129,12 @@ const GeneratePDF = (args,path) => {
       })}
 
 
+    
+          
+      
+
 const generate_all_time_sheets = async (args) =>{
+  
   var file_counter = 1;
   var files = [];
   files.push("./generatedOutput/output0.pdf")
