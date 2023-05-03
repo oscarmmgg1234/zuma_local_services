@@ -118,7 +118,6 @@ server.use('/EmployeeResourcesAPI/GPETS', (req,res,next)=>{
 })
 
 server.post('/EmployeeResourcesAPI/Generate_Time_sheet_all', async (req, res)=>{
-  console.log(req.body);
   await Employee.gen_pdf_all(req.request_model);
   setTimeout(()=>{var data =fs.readFileSync('./generatedOutput/merged.pdf');
   res.contentType("application/pdf");
