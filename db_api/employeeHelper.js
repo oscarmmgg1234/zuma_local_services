@@ -1,8 +1,8 @@
 const {db_init} = require('./db_init')
 const date = require('date-and-time')
 const fs = require('fs')
-var pdf = require("pdf-creator-node");
-const { PDFDocument, StandardFonts } = require('pdf-lib');
+const Handlebars = require('handlebars');
+
 
 const { request } = require('../models/models_interface/request_interface');
 
@@ -106,26 +106,15 @@ const GeneratePDF = async (args,path) => {
       employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
       employee_data[0].SHIFT_DAYS = Days;
       
-      var document = {
-        data: {employeeData: data, employee: employee_data[0]},
-        html: html,
-        path: path,
-        type: "",
-      };
-        var options = {
-        format: "Letter",
-        orientation: "portrait",
-        border: "5mm",
-        phantomPath: './node_modules/phantomjs-prebuilt/bin/phantomjs'
-      };
-        pdf
-      .create(document, options)
-      .then((res) => {
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-      
+      var templateSRC = Handlebars.compile(html);
+      const doc = new PDFDocument();
+      const input_data = {employeeData: data, employee: employee_data[0]}
+      const output_html = templateSRC(input_data);
+      doc.pipe(fs.createWriteStream(path))
+      doc.html(output_html);
+
+      doc.end();
+
       Resolve();
       })}
 
