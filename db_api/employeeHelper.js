@@ -115,7 +115,8 @@ const GeneratePDF = async (args,path) => {
         var options = {
         format: "Letter",
         orientation: "portrait",
-        border: "5mm"
+        border: "5mm",
+        phantomPath: './node_modules/phantomjs-prebuilt/bin/phantomjs'
       };
         pdf
       .create(document, options)
