@@ -22,12 +22,12 @@ const transform_start_shift = (args) => {
   transformStartShift(args);
 }
 
-const generate_timesheet_pdf_wrapper = async (args,path) => {
-  GeneratePDF(args,path);
+const generate_timesheet_pdf_wrapper = async (args) => {
+  return await GeneratePDF(args);
 }
 
 const generate_time_all_wrapper = async (args) =>{
-  GeneratePDF_ALL(args);
+  return await GeneratePDF_ALL(args);
 }
 
 const get_employee_info_wrapper = async (args) =>{

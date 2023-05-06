@@ -3,11 +3,11 @@ transformEndShift, transformStartShift, removeShift, previewRemoveShift}
 = require('../employee_api_wrapper')
 
 class employee {
-    async gen_pdf(args,path){
-        generate_pdf(args,path);
+    async gen_pdf(args){
+        return await generate_pdf(args);
     }
     async gen_pdf_all(args){
-        generate_pdf_all(args);
+        return await generate_pdf_all(args);
     }
     e_json_data(args,callback){
         return callback(get_json_employee_data(args));

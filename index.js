@@ -4,9 +4,11 @@ const env_data = require("./env.json")
 const cors = require('cors');
 const path = require("path")
 const fs = require("fs");
+
 const {request} = require("./models/models_interface/request_interface")
 const {employee} = require("./workers/employee_interface/employee_interface")
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+const { connect } = require('http2');
 
 const sslOptions = {
   key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
@@ -111,17 +113,28 @@ server.use('/EmployeeResourcesAPI/GPETS', (req,res,next)=>{
 
  
  server.post('/EmployeeResourcesAPI/Generate_Time_sheet', async (req, res)=>{
-  await Employee.gen_pdf(req.request_model, "./generatedOutput/output.pdf");
-  setTimeout(()=>{var data =fs.readFileSync('./generatedOutput/output.pdf');
-  res.contentType("application/pdf");
-  res.send(data);}, 3000)
+  res.setHeader("Content-Type", 'application/pdf');
+  await Employee.gen_pdf(req.request_model)
+  .then(async (pdf) => {
+    res.send(Buffer.from(pdf, 'base64'))
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).send(error);
+  });
 })
 
 server.post('/EmployeeResourcesAPI/Generate_Time_sheet_all', async (req, res)=>{
-  await Employee.gen_pdf_all(req.request_model);
-  setTimeout(()=>{var data =fs.readFileSync('./generatedOutput/merged.pdf');
-  res.contentType("application/pdf");
-  res.send(data);}, 4250)
+  res.setHeader("Content-Type", 'application/pdf');
+  await Employee.gen_pdf_all(req.request_model)
+  .then(async (pdf) => {
+    
+    res.send(Buffer.from(pdf, 'base64'))
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).send(error);
+  });
 })
 
  server.post('/EmployeeResourcesAPI/StartShift',(req,res)=>{

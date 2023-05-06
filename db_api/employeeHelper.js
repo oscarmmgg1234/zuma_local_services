@@ -2,12 +2,12 @@ const {db_init} = require('./db_init')
 const date = require('date-and-time')
 const fs = require('fs')
 const Handlebars = require('handlebars');
-
-
+const { PDFDocument } = require('pdf-lib');
 const { request } = require('../models/models_interface/request_interface');
+const wkhtmltopdf = require('wkhtmltopdf');
+
 
 const req = new request()
-
 var html = fs.readFileSync("./html_templates/time_sheet.html", "utf8");
 
 const db = db_init();
@@ -86,7 +86,7 @@ const getEmployee_formatted = (args) => {
 }
 
 
-const GeneratePDF = async (args,path) => {
+const GeneratePDF = async (args) => {
   return new Promise(async (Resolve)=>{
       
       var data = await getEmployee_formatted(args);
@@ -107,61 +107,62 @@ const GeneratePDF = async (args,path) => {
       employee_data[0].SHIFT_DAYS = Days;
       
       var templateSRC = Handlebars.compile(html);
-      const doc = new PDFDocument();
       const input_data = {employeeData: data, employee: employee_data[0]}
       const output_html = templateSRC(input_data);
-      doc.pipe(fs.createWriteStream(path))
-      doc.html(output_html);
-
-      doc.end();
-
-      Resolve();
+      
+      let buffers = [];
+      wkhtmltopdf(output_html, { pageSize: 'letter',
+      orientation: 'portrait',
+      marginTop: '5mm',
+      marginRight: '5mm',
+      marginBottom: '5mm',
+      marginLeft: '5mm',}, (err, stream)=>{
+        if(err) console.log(err);
+        stream.on('data', (data)=>{buffers.push(data)})
+        stream.on('end', ()=>{
+          let blob = new Blob(buffers, { type: 'application/pdf' });
+          Resolve(blob.arrayBuffer());
+        })
+      });
       })}
 
 
     
-          
+      const generate_time_sheet = async (args) => {
+        const pdfBlob = await GeneratePDF(args);
+        return Buffer.from(await pdfBlob);
+      };
       
-
-const generate_all_time_sheets = async (args) =>{
-  
-  var file_counter = 1;
-  var files = [];
-  files.push("./generatedOutput/output0.pdf")
-  db.query(querys.get_all_time_sheet,(err,result)=>{
-    if(err)console.log(err);
-    const res = Object.values(JSON.parse(JSON.stringify(result)));
-    req.pdf_r_model({shift_start_range: args.range_start, shift_end_range: args.range_end,employee_id: res[0].EMPLOYEE_ID},(data)=>{GeneratePDF(data,'./generatedOutput/output0.pdf');})
-      const intervalID = setInterval(()=>{
-        if(file_counter == res[0].count){
-          
-          clearInterval(intervalID)
+      const generate_all_time_sheets = async (args) => {
+        const files = [];
+        const employeeIds = await new Promise((resolve) => {
+          db.query(querys.get_all_time_sheet, (err, result) => {
+            if (err) throw err;
+            const ids = result.map((row) => row.EMPLOYEE_ID);
+            resolve(ids);
+          });
+        });
       
+        for (const employeeId of employeeIds) {
+          var newArgs = null;
+          req.pdf_r_model({employee_id: employeeId, shift_start_range: args.range_start, shift_end_range: args.range_end},(obj)=>newArgs = obj);
+          const file = await generate_time_sheet(newArgs);
+          files.push(file);
         }
-        else{
-      var path = `./generatedOutput/output${file_counter}.pdf`;
-      files.push(path);
-      req.pdf_r_model({shift_start_range: args.range_start, shift_end_range: args.range_end,employee_id: res[file_counter].EMPLOYEE_ID},(data)=>{GeneratePDF(data,path);})
-      file_counter = file_counter + 1;
-        }
+        const mergedFile = await merge_pdf(files);
+        return mergedFile;
+      };
       
-  }, 600)
-  setTimeout(()=>{merge_pdf(files)}, res[0].count*650)
-  })}
-
-  const merge_pdf = async (files)=>{
-    const mergedPdf = await PDFDocument.create();
-    for (let i = 0; i < files.length; i++) {
-      const fileContents = fs.readFileSync(files[i]);
-      const pdf = await PDFDocument.load(fileContents);
-    
-      const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-      pages.forEach((page) => mergedPdf.addPage(page));
-    }
-    const mergedPdfBytes = await mergedPdf.save();
-    fs.writeFileSync('./generatedOutput/merged.pdf', mergedPdfBytes);
-  }
-
+      const merge_pdf = async (buffers) => {
+        const mergedPdf = await PDFDocument.create();
+        for (let i = 0; i < buffers.length; i++) {
+          const pdf = await PDFDocument.load(buffers[i]);
+          const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+          pages.forEach((page) => mergedPdf.addPage(page));
+        }
+        const mergedPdfBytes = await mergedPdf.save();
+        return mergedPdfBytes;
+      };
 
 const getEmployees = () => {
   return new Promise((resolve)=>{
