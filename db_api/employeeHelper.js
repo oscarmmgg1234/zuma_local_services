@@ -266,7 +266,7 @@ const previewTransformEndShift = (args) => {
             );
             const inpt = date.format(newDate, output_entry_pattern);
             return {
-              SHIFT_END: inpt,
+              SHIFT_END: dateObj.VALID == 1 ? inpt : "Called Off",
               SHIFT_CHANGE: true,
               SHIFT_START: date.format(
                 new Date(dateObj.SHIFT_START),
@@ -279,10 +279,9 @@ const previewTransformEndShift = (args) => {
             };
           } else {
             return {
-              SHIFT_END: date.format(
-                new Date(dateObj.SHIFT_END),
-                output_entry_pattern
-              ),
+              SHIFT_END: dateObj.VALID
+                ? date.format(new Date(dateObj.SHIFT_END), output_entry_pattern)
+                : "Called Off",
               SHIFT_START: date.format(
                 new Date(dateObj.SHIFT_START),
                 output_entry_pattern
@@ -459,6 +458,7 @@ const previewRemoveShift = (args) => {
 };
 
 const transformEndShift = (args) => {
+  //add a remove rever function that will
   const date_pattern = date.compile("YYYY-MM-DD");
   const start_date = new Date(args.date);
   const entry_date = date.addDays(start_date, -1);
