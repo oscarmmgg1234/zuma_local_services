@@ -456,7 +456,7 @@ const transformStartShift = (args) => {
 const removeShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const newDate = new Date(args.date);
-  console.log(args.e_id, date.format(entry_date, date_pattern));
+  console.log(args.e_id, date.format(newDate, date_pattern));
   db.query(querys.remove_shift_log, [
     args.e_id,
     date.format(newDate, date_pattern),
