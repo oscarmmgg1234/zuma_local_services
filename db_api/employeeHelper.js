@@ -29,6 +29,8 @@ const querys = {
     "SELECT * FROM SHIFT_LOG WHERE SHIFT_DATE = ? AND EMPLOYEE_ID = ?",
   remove_shift_log:
     "UPDATE SHIFT_LOG SET VALID = 0 WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ? ",
+  revert_remove_shift_log:
+    "UPDATE SHIFT_LOG SET VALID = 1 WHERE EMPLOYEE_ID = ? AND SHIFT_DATE = ?",
   transform_start_shift_log:
     "UPDATE SHIFT_LOG SET SHIFT_START = ? WHERE EMPLOYEE_ID = ?",
   transform_end_shift_log:
@@ -460,11 +462,17 @@ const transformStartShift = (args) => {
 const removeShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const newDate = new Date(args.date);
-  console.log(args.e_id, date.format(newDate, date_pattern));
-  db.query(querys.remove_shift_log, [
-    args.e_id,
-    date.format(newDate, date_pattern),
-  ]);
+  if ((args.revert = false)) {
+    db.query(querys.remove_shift_log, [
+      args.e_id,
+      date.format(newDate, date_pattern),
+    ]);
+  } else {
+    db.query(querys.revert_remove_shift_log, [
+      args.e_id,
+      date.format(newDate, date_pattern),
+    ]);
+  }
 };
 
 // 3-4 weeks ~~~
