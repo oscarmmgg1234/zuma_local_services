@@ -1,5 +1,5 @@
 const {generate_pdf, get_json_employee_data, get_zuma_employees, insert_start_shift, insert_end_shift, generate_pdf_all, previewEndShift, previewStartShift,
-transformEndShift, transformStartShift, removeShift, previewRemoveShift} 
+transformEndShift, transformStartShift, removeShift, previewRemoveShift, addAssignment, previewEditAssignment, editAssignment} 
 = require('../employee_api_wrapper')
 
 class employee {
@@ -41,6 +41,15 @@ class employee {
     }
     async prev_rm_shift (args,callback){
         return callback( await previewRemoveShift(args));
+    }
+    add_assign(args){
+        addAssignment(args);
+    }
+    async prev_edit_assign(args,callback){
+        return callback(await previewEditAssignment(args));
+    }
+    edit_assign(args){
+        editAssignment(args);
     }
 }
 
