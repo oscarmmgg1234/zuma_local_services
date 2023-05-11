@@ -407,47 +407,22 @@ const previewRemoveShift = (args) => {
             date.format(newStart, date_entry_pattern).toString()
           ) {
             return {
-              SHIFT_END:
-                dateObj.VALID == 1
-                  ? date.format(
-                      new Date(dateObj.SHIFT_END),
-                      output_entry_pattern
-                    )
-                  : "Called Off",
               SHIFT_CHANGE: true,
-              SHIFT_START:
-                dateObj.VALID == 1
-                  ? date.format(
-                      new Date(dateObj.SHIFT_START),
-                      output_entry_pattern
-                    )
-                  : "Called Off",
-              SHIFT_DATE: date.format(
-                new Date(dateObj.SHIFT_DATE),
-                date_entry_pattern
-              ),
+
+              SHIFT_DATE: dateObj.VALID
+                ? date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern)
+                : "Called Off",
             };
           } else {
             return {
-              SHIFT_END:
-                dateObj.VALID == 1
-                  ? date.format(
-                      new Date(dateObj.SHIFT_END),
-                      output_entry_pattern
-                    )
-                  : "Called Off",
-              SHIFT_START:
-                dateObj.VALID == 1
-                  ? date.format(
-                      new Date(dateObj.SHIFT_START),
-                      output_entry_pattern
-                    )
-                  : "Called Off",
               SHIFT_CHANGE: false,
-              SHIFT_DATE: date.format(
-                new Date(dateObj.SHIFT_DATE),
-                date_entry_pattern
-              ),
+              SHIFT_DATE:
+                dateObj.VALID == 1
+                  ? date.format(
+                      new Date(dateObj.SHIFT_DATE),
+                      date_entry_pattern
+                    )
+                  : "Called Off",
             };
           }
         });
