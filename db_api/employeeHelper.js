@@ -463,13 +463,11 @@ const removeShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const newDate = new Date(args.date);
   if (args.revert == false) {
-    console.log("remove");
     db.query(querys.remove_shift_log, [
       args.e_id,
       date.format(newDate, date_pattern),
     ]);
   } else {
-    console.log("revert");
     db.query(querys.revert_remove_shift_log, [
       args.e_id,
       date.format(newDate, date_pattern),
@@ -551,8 +549,7 @@ const previewEditAssignment = (args) => {
     //example args {e_id, date, assignmentRangeOption, shiftRange} => return all assignment entries corrolated to that eid and date
     const date_pattern = date.compile("YYYY-MM-DD");
     const start = new Date(args.date);
-
-    console.log(date.format(start, date_pattern));
+    
     db.query(
       querys.preview_edit_assignment,
       [args.e_id, date.format(start, date_pattern)],
