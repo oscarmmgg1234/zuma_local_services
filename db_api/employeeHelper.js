@@ -268,29 +268,13 @@ const previewTransformEndShift = (args) => {
             return {
               SHIFT_END: dateObj.VALID == 1 ? inpt : "Called Off",
               SHIFT_CHANGE: true,
-              SHIFT_START: date.format(
-                new Date(dateObj.SHIFT_START),
-                output_entry_pattern
-              ),
-              SHIFT_DATE: date.format(
-                new Date(dateObj.SHIFT_DATE),
-                date_entry_pattern
-              ),
             };
           } else {
             return {
               SHIFT_END: dateObj.VALID
                 ? date.format(new Date(dateObj.SHIFT_END), output_entry_pattern)
                 : "Called Off",
-              SHIFT_START: date.format(
-                new Date(dateObj.SHIFT_START),
-                output_entry_pattern
-              ),
               SHIFT_CHANGE: false,
-              SHIFT_DATE: date.format(
-                new Date(dateObj.SHIFT_DATE),
-                date_entry_pattern
-              ),
             };
           }
         });
@@ -335,29 +319,11 @@ const previewTransformStartShift = (args) => {
             );
             const inpt = date.format(newDate, output_entry_pattern);
             return {
-              SHIFT_END:
-                dateObj.VALID == 1
-                  ? date.format(
-                      new Date(dateObj.SHIFT_END),
-                      output_entry_pattern
-                    )
-                  : "Called Off",
               SHIFT_CHANGE: true,
               SHIFT_START: dateObj.VALID == 1 ? inpt : "Called Off",
-              SHIFT_DATE: date.format(
-                new Date(dateObj.SHIFT_DATE),
-                date_entry_pattern
-              ),
             };
           } else {
             return {
-              SHIFT_END:
-                dateObj.VALID == 1
-                  ? date.format(
-                      new Date(dateObj.SHIFT_END),
-                      output_entry_pattern
-                    )
-                  : "Called Off",
               SHIFT_START:
                 dateObj.VALID == 1
                   ? date.format(
@@ -366,10 +332,6 @@ const previewTransformStartShift = (args) => {
                     )
                   : "Called Off",
               SHIFT_CHANGE: false,
-              SHIFT_DATE: date.format(
-                new Date(dateObj.SHIFT_DATE),
-                date_entry_pattern
-              ),
             };
           }
         });
