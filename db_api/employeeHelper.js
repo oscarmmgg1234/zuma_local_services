@@ -371,9 +371,13 @@ const previewRemoveShift = (args) => {
             return {
               SHIFT_CHANGE: true,
 
-              SHIFT_DATE: dateObj.VALID
-                ? date.format(new Date(dateObj.SHIFT_DATE), date_entry_pattern)
-                : "Called Off",
+              SHIFT_DATE:
+                dateObj.VALID == 1
+                  ? date.format(
+                      new Date(dateObj.SHIFT_DATE),
+                      date_entry_pattern
+                    )
+                  : "Called Off",
             };
           } else {
             return {
