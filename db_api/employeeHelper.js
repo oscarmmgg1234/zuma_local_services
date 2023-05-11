@@ -271,9 +271,13 @@ const previewTransformEndShift = (args) => {
             };
           } else {
             return {
-              SHIFT_END: dateObj.VALID
-                ? date.format(new Date(dateObj.SHIFT_END), output_entry_pattern)
-                : "Called Off",
+              SHIFT_END:
+                dateObj.VALID == 1
+                  ? date.format(
+                      new Date(dateObj.SHIFT_END),
+                      output_entry_pattern
+                    )
+                  : "Called Off",
               SHIFT_CHANGE: false,
             };
           }
