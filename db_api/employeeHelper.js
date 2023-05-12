@@ -420,7 +420,6 @@ const transformEndShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const start_date = new Date(args.date);
   const entry_date = date.addDays(start_date, -1);
-  const newDate = date.addDays(entry_date, 1);
 
   db.query(
     querys.get_specific_s_log,
@@ -447,11 +446,10 @@ const transformStartShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const start_date = new Date(args.date);
   const entry_date = date.addDays(start_date, -1);
-  const newDate = date.addDays(entry_date, 1);
 
   db.query(
     querys.get_specific_s_log,
-    [date.format(newDate, date_pattern), args.e_id],
+    [date.format(entry_date, date_pattern), args.e_id],
     (err, result) => {
       const data = Object.values(JSON.parse(JSON.stringify(result)));
       if ((data[0].VALID = 1)) {
@@ -461,7 +459,7 @@ const transformStartShift = (args) => {
           const upated_date = date.addHours(shift_date, args.hours);
           db.query(
             querys.transform_start_shift_log,
-            [upated_date, args.e_id, date.format(newDate, date_pattern)],
+            [upated_date, args.e_id, date.format(entry_date, date_pattern)],
             (err, result) => {}
           );
         }
