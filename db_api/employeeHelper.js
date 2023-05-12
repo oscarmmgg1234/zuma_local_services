@@ -236,6 +236,7 @@ const getEmployees = () => {
 };
 
 const previewTransformEndShift = (args) => {
+  console.log(JSON.stringify(args));
   return new Promise((resolve) => {
     const date_entry_pattern = date.compile("YYYY-MM-DD");
     const output_entry_pattern = date.compile("YYYY-MM-DD HH:mm");
@@ -243,7 +244,7 @@ const previewTransformEndShift = (args) => {
     const tempstart = new Date(args.date);
     const start = date.addDays(tempstart, -1);
     const range_start = date.addDays(start, 2);
-    const range_end = date.addDays(start, 1);
+    const range_end = start;
 
     db.query(
       querys.get_shift_log,
@@ -254,7 +255,7 @@ const previewTransformEndShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 2);
+        const newStart = date.addDays(start, 1);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -293,6 +294,7 @@ const previewTransformEndShift = (args) => {
 // previewTransformEndShift({date: "2023-05-08", e_id: "00001", hours: -3})
 
 const previewTransformStartShift = (args) => {
+  console.log(JSON.stringify(args));
   return new Promise((resolve) => {
     const date_entry_pattern = date.compile("YYYY-MM-DD");
     const output_entry_pattern = date.compile("YYYY-MM-DD HH:mm");
@@ -300,7 +302,8 @@ const previewTransformStartShift = (args) => {
     const tempstart = new Date(args.date);
     const start = date.addDays(tempstart, -1);
     const range_start = date.addDays(start, 3);
-    const range_end = date.addDays(start, 1);
+    const range_end = start;
+    console.log(`tempstart: ${range_start}`);
 
     db.query(
       querys.get_shift_log,
@@ -311,13 +314,13 @@ const previewTransformStartShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 2);
+        const newStart = date.addDays(start, 1);
+        console.log(`newStart: ${newStart}`);
         const date_res = data.map((dateObj) => {
           if (
             date
               .format(new Date(dateObj.SHIFT_DATE), date_entry_pattern)
-              .toString() ==
-            date.format(newStart, date_entry_pattern).toString()
+              .toString() == date.format(start, date_entry_pattern).toString()
           ) {
             const newDate = date.addHours(
               new Date(dateObj.SHIFT_START),
