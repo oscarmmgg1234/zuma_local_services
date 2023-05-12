@@ -427,6 +427,7 @@ const transformEndShift = (args) => {
     [date.format(newDate, date_pattern), args.e_id],
     (err, result) => {
       const data = Object.values(JSON.parse(JSON.stringify(result)));
+      console.log(data);
       if ((data[0].VALID = 1)) {
         if (data.length == 0) {
         } else {
