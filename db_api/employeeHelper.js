@@ -156,8 +156,8 @@ const GeneratePDF = async (args) => {
       }
     });
     const pattern = date.compile("MMM DD YYYY");
-    const date1 = date.addDays(new Date(args.range_start), 1);
-    const date2 = date.addDays(new Date(args.range_end), 1);
+    const date1 = date.addDays(new Date(args.range_start), -1);
+    const date2 = date.addDays(new Date(args.range_end), -1);
 
     employee_data[0].SHIFT_START = date.format(date1, pattern);
     employee_data[0].SHIFT_END = date.format(date2, pattern);
