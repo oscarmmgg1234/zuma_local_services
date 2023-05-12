@@ -94,12 +94,13 @@ const getEmployee_formatted = (args) => {
     var date3;
     var output;
     const date_pattern = date.compile("MMM DD YYYY");
+    const query_date = date.compile("YYYY-MM-DD");
     const date_pattern_shift = date.compile("hh:mm A");
     db.query(
       querys.get_shift_log,
       [
-        date.format(new Date(args.range_start), date_pattern),
-        date.format(new Date(args.range_end), date_pattern),
+        date.format(new Date(args.range_start), query_date),
+        date.format(new Date(args.range_end), query_date),
         args.e_id,
       ],
       function (err, result, fields) {
