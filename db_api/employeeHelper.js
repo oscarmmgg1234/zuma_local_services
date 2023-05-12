@@ -236,13 +236,12 @@ const getEmployees = () => {
 };
 
 const previewTransformEndShift = (args) => {
-  console.log(JSON.stringify(args));
   return new Promise((resolve) => {
     const date_entry_pattern = date.compile("YYYY-MM-DD");
     const output_entry_pattern = date.compile("YYYY-MM-DD HH:mm");
 
     const tempstart = new Date(args.date);
-    const start = date.addDays(tempstart, -1);
+    const start = date.addDays(tempstart, -2);
     const range_start = date.addDays(start, 2);
     const range_end = start;
 
@@ -294,7 +293,6 @@ const previewTransformEndShift = (args) => {
 // previewTransformEndShift({date: "2023-05-08", e_id: "00001", hours: -3})
 
 const previewTransformStartShift = (args) => {
-  console.log(JSON.stringify(args));
   return new Promise((resolve) => {
     const date_entry_pattern = date.compile("YYYY-MM-DD");
     const output_entry_pattern = date.compile("YYYY-MM-DD HH:mm");
@@ -303,7 +301,6 @@ const previewTransformStartShift = (args) => {
     const start = date.addDays(tempstart, -2);
     const range_start = date.addDays(start, 2);
     const range_end = start;
-    console.log(`tempstart: ${range_start}`);
 
     db.query(
       querys.get_shift_log,
