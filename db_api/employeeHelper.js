@@ -319,7 +319,8 @@ const previewTransformStartShift = (args) => {
           if (
             date
               .format(new Date(dateObj.SHIFT_DATE), date_entry_pattern)
-              .toString() == date.format(start, date_entry_pattern).toString()
+              .toString() ==
+            date.format(newStart, date_entry_pattern).toString()
           ) {
             const newDate = date.addHours(
               new Date(dateObj.SHIFT_START),
