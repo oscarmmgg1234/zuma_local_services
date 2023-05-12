@@ -424,10 +424,9 @@ const transformEndShift = (args) => {
 
   db.query(
     querys.get_specific_s_log,
-    [date.format(newDate, date_pattern), args.e_id],
+    [date.format(start_date, date_pattern), args.e_id],
     (err, result) => {
       const data = Object.values(JSON.parse(JSON.stringify(result)));
-      console.log(data);
       if ((data[0].VALID = 1)) {
         if (data.length == 0) {
         } else {
