@@ -243,7 +243,7 @@ const previewTransformEndShift = (args) => {
     const tempstart = new Date(args.date);
     const start = date.addDays(tempstart, -1);
     const range_start = date.addDays(start, 2);
-    const range_end = start;
+    const range_end = date.addDays(start, 1);
 
     db.query(
       querys.get_shift_log,
@@ -254,7 +254,7 @@ const previewTransformEndShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -299,8 +299,8 @@ const previewTransformStartShift = (args) => {
 
     const tempstart = new Date(args.date);
     const start = date.addDays(tempstart, -1);
-    const range_start = date.addDays(start, 2);
-    const range_end = start;
+    const range_start = date.addDays(start, 3);
+    const range_end = date.addDays(start, 1);
 
     db.query(
       querys.get_shift_log,
@@ -311,7 +311,7 @@ const previewTransformStartShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -549,7 +549,7 @@ const previewEditAssignment = (args) => {
     //example args {e_id, date, assignmentRangeOption, shiftRange} => return all assignment entries corrolated to that eid and date
     const date_pattern = date.compile("YYYY-MM-DD");
     const start = new Date(args.date);
-    
+
     db.query(
       querys.preview_edit_assignment,
       [args.e_id, date.format(start, date_pattern)],
