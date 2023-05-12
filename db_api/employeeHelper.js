@@ -300,8 +300,8 @@ const previewTransformStartShift = (args) => {
     const output_entry_pattern = date.compile("YYYY-MM-DD HH:mm");
 
     const tempstart = new Date(args.date);
-    const start = date.addDays(tempstart, -1);
-    const range_start = date.addDays(start, 3);
+    const start = date.addDays(tempstart, -2);
+    const range_start = date.addDays(start, 2);
     const range_end = start;
     console.log(`tempstart: ${range_start}`);
 
@@ -315,7 +315,6 @@ const previewTransformStartShift = (args) => {
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
         const newStart = date.addDays(start, 1);
-        console.log(`newStart: ${newStart}`);
         const date_res = data.map((dateObj) => {
           if (
             date
