@@ -95,38 +95,48 @@ const getEmployee_formatted = (args) => {
     var output;
     const date_pattern = date.compile("MMM DD YYYY");
     const date_pattern_shift = date.compile("hh:mm A");
-    db.query(querys.get_shift_log, args.map(), function (err, result, fields) {
-      output = Object.values(JSON.parse(JSON.stringify(result))).map((val) => {
-        const fullTime = 40;
-        date1 = new Date(val.SHIFT_START);
-        date2 = new Date(val.SHIFT_END);
-        date3 = new Date(val.SHIFT_DATE);
-        hours = Math.floor(date.subtract(date2, date1).toHours());
-        if (hours > 40) {
-          othours = hours - 40;
-        }
-        return {
-          ...val,
-          SHIFT_START:
-            val.VALID == 1
-              ? date.format(date1, date_pattern_shift)
-              : "Called Off",
-          SHIFT_END:
-            val.VALID == 1
-              ? date.format(date2, date_pattern_shift)
-              : "Called Off",
-          SHIFT_HOURS:
-            val.VALID == 1
-              ? hours > 40
-                ? fullTime.toFixed(2)
-                : hours.toFixed(2)
-              : 0,
-          SHIFT_OTHOURS: val.VALID == 1 ? othours.toFixed(2) : 0,
-          SHIFT_DATE: date.format(date3, date_pattern),
-        };
-      });
-      resolve(output);
-    });
+    db.query(
+      querys.get_shift_log,
+      [
+        date.format(new Date(args.range_start), date_pattern),
+        date.format(new Date(args.range_end), date_pattern),
+        args.e_id,
+      ],
+      function (err, result, fields) {
+        output = Object.values(JSON.parse(JSON.stringify(result))).map(
+          (val) => {
+            const fullTime = 40;
+            date1 = new Date(val.SHIFT_START);
+            date2 = new Date(val.SHIFT_END);
+            date3 = new Date(val.SHIFT_DATE);
+            hours = Math.floor(date.subtract(date2, date1).toHours());
+            if (hours > 40) {
+              othours = hours - 40;
+            }
+            return {
+              ...val,
+              SHIFT_START:
+                val.VALID == 1
+                  ? date.format(date1, date_pattern_shift)
+                  : "Called Off",
+              SHIFT_END:
+                val.VALID == 1
+                  ? date.format(date2, date_pattern_shift)
+                  : "Called Off",
+              SHIFT_HOURS:
+                val.VALID == 1
+                  ? hours > 40
+                    ? fullTime.toFixed(2)
+                    : hours.toFixed(2)
+                  : 0,
+              SHIFT_OTHOURS: val.VALID == 1 ? othours.toFixed(2) : 0,
+              SHIFT_DATE: date.format(date3, date_pattern),
+            };
+          }
+        );
+        resolve(output);
+      }
+    );
   });
 };
 
