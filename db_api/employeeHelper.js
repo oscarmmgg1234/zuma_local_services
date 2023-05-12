@@ -434,7 +434,7 @@ const transformEndShift = (args) => {
           const upated_date = date.addHours(shift_date, args.hours);
           db.query(
             querys.transform_end_shift_log,
-            [upated_date, args.e_id, date.format(newDate, date_pattern)],
+            [upated_date, args.e_id, date.format(entry_date, date_pattern)],
             (err, result) => {}
           );
         }
