@@ -5,29 +5,8 @@ class pdf_request_model {
   range_end = null;
   e_id = null;
   constructor(args) {
-    const date_pattern = date.compile("YYYY-MM-DD");
-
-    const start_compare = date
-      .format(new Date(args[0]), date_pattern)
-      .localeCompare(new Date(args[0]));
-    const end_compare = date
-      .format(new Date(args[1]), date_pattern)
-      .localeCompare(new Date(args[1]));
-
     this.range_start = new Date(args[0]);
-    console.log(new Date(Date.now()).getTimezoneOffset());
-    if (start_compare == -1) {
-      this.range_start = date.addDays(this.range_start, 1);
-    } else if (start_compare == 1) {
-      this.range_start = date.addDays(this.range_start, -1);
-    }
     this.range_end = new Date(args[1]);
-    if (end_compare == -1) {
-      this.range_end = date.addDays(this.range_end, 1);
-    } else if (start_compare == 1) {
-      this.range_end = date.addDays(this.range_end, -1);
-    }
-
     this.e_id = args[2] ? args[2] : null;
   }
   validate() {
