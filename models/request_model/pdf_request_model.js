@@ -15,6 +15,7 @@ class pdf_request_model {
       .localeCompare(new Date(args[1]));
 
     this.range_start = new Date(args[0]);
+    console.log(Date.now());
     if (start_compare == -1) {
       this.range_start = date.addDays(this.range_start, 1);
     } else if (start_compare == 1) {
