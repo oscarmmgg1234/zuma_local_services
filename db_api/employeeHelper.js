@@ -263,7 +263,7 @@ const previewTransformEndShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -320,7 +320,7 @@ const previewTransformStartShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -375,7 +375,7 @@ const previewRemoveShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -417,11 +417,11 @@ const transformEndShift = (args) => {
   //add a remove rever function that will
   const date_pattern = date.compile("YYYY-MM-DD");
   const start_date = new Date(args.date);
-  const entry_date = date.addDays(start_date, -1);
+  //const entry_date = date.addDays(start_date, -1);
 
   db.query(
     querys.get_specific_s_log,
-    [date.format(entry_date, date_pattern), args.e_id],
+    [date.format(start_date, date_pattern), args.e_id],
     (err, result) => {
       const data = Object.values(JSON.parse(JSON.stringify(result)));
       if ((data[0].VALID = 1)) {
@@ -431,7 +431,7 @@ const transformEndShift = (args) => {
           const upated_date = date.addHours(shift_date, args.hours);
           db.query(
             querys.transform_end_shift_log,
-            [upated_date, args.e_id, date.format(entry_date, date_pattern)],
+            [upated_date, args.e_id, date.format(start_date, date_pattern)],
             (err, result) => {}
           );
         }
@@ -443,11 +443,11 @@ const transformEndShift = (args) => {
 const transformStartShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const start_date = new Date(args.date);
-  const entry_date = date.addDays(start_date, -1);
+  //const entry_date = date.addDays(start_date, -1);
 
   db.query(
     querys.get_specific_s_log,
-    [date.format(entry_date, date_pattern), args.e_id],
+    [date.format(start_date, date_pattern), args.e_id],
     (err, result) => {
       const data = Object.values(JSON.parse(JSON.stringify(result)));
       if ((data[0].VALID = 1)) {
@@ -457,7 +457,7 @@ const transformStartShift = (args) => {
           const upated_date = date.addHours(shift_date, args.hours);
           db.query(
             querys.transform_start_shift_log,
-            [upated_date, args.e_id, date.format(entry_date, date_pattern)],
+            [upated_date, args.e_id, date.format(start_date, date_pattern)],
             (err, result) => {}
           );
         }
@@ -468,16 +468,16 @@ const transformStartShift = (args) => {
 
 const removeShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
-  const newDate = date.addDays(new Date(args.date), -1);
+  // const newDate = date.addDays(new Date(args.date), -1);
   if (args.revert == false) {
     db.query(querys.remove_shift_log, [
       args.e_id,
-      date.format(newDate, date_pattern),
+      date.format(new Date(args.date), date_pattern),
     ]);
   } else {
     db.query(querys.revert_remove_shift_log, [
       args.e_id,
-      date.format(newDate, date_pattern),
+      date.format(new Date(args.date), date_pattern),
     ]);
   }
 };
