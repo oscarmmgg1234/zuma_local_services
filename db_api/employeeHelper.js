@@ -99,8 +99,8 @@ const getEmployee_formatted = (args) => {
     db.query(
       querys.get_shift_log,
       [
-        date.format(date.addDays(new Date(args.range_start), -1), query_date),
-        date.format(date.addDays(new Date(args.range_end), -1), query_date),
+        date.format(args.range_start, query_date),
+        date.format(args.range_end, query_date),
         args.e_id,
       ],
       function (err, result, fields) {
@@ -156,11 +156,9 @@ const GeneratePDF = async (args) => {
       }
     });
     const pattern = date.compile("MMM DD YYYY");
-    const date1 = date.addDays(new Date(args.range_start), -1);
-    const date2 = date.addDays(new Date(args.range_end), -1);
 
-    employee_data[0].SHIFT_START = date.format(date1, pattern);
-    employee_data[0].SHIFT_END = date.format(date2, pattern);
+    employee_data[0].SHIFT_START = date.format(args.range_start, pattern);
+    employee_data[0].SHIFT_END = date.format(args.range_end, pattern);
     employee_data[0].SHIFT_HOURS = TotalHours;
     employee_data[0].SHIFT_OTHOURS = TotalOTHours;
     employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
