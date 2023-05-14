@@ -226,6 +226,7 @@ server.post(
 );
 
 server.post("EmployeeResourcesAPI/addAssignment", (req, res) => {
+  console.log(JSON.stringify(req.request_model));
   Employee.add_assignment(req.request_model, (data) => {});
   res.send({ status: "added" });
 });
