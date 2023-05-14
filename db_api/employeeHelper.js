@@ -521,13 +521,12 @@ const removeShift = (args) => {
 const addAssignment = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
   const start = new Date(args.date);
-  const entry_date = date.addDays(start, -1);
   db.query(querys.add_assignmnent_log, [
     args.e_id,
     0,
     args.range_start,
     args.range_end,
-    date.format(entry_date, date_pattern),
+    date.format(start, date_pattern),
     "23234",
   ]);
 };

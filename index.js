@@ -226,9 +226,8 @@ server.post(
 );
 
 server.post("EmployeeResourcesAPI/addAssignment", (req, res) => {
-  Employee.add_assignment(req.request_model, (data) => {
-    res.send(data);
-  });
+  Employee.add_assignment(req.request_model, (data) => {});
+  res.send({ status: "added" });
 });
 
 //poll
