@@ -34,10 +34,12 @@ server.use("/EmployeeResourcesAPI/GeneratePDF", (req, res, next) => {
   }
 });
 server.use("/EmployeeResourcesAPI/addAssignment", (req, res, next) => {
+  console.log(req.body);
   request_model.add_assign(req.body, (data) => {
     req.request_model = data;
   });
   if (req.request_model.validate()) {
+    console.log("valid");
     next();
   } else {
     res.send("request invalid").end();
