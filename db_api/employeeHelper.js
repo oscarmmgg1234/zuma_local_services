@@ -6,6 +6,9 @@ const { PDFDocument } = require("pdf-lib");
 const { request } = require("../models/models_interface/request_interface");
 const wkhtmltopdf = require("wkhtmltopdf");
 const { query } = require("express");
+const {
+  employee,
+} = require("../workers/employee_interface/employee_interface");
 const req = new request();
 var html = fs.readFileSync("./html_templates/time_sheet.html", "utf8");
 
@@ -47,6 +50,8 @@ const querys = {
     "SELECT * FROM WORK_ASSIGNMENT WHERE EMPLOYEE_ID = ? AND ASSIGNMENT_DATE = ?",
   view_assignments:
     "SELECT * FROM WORK_ASSIGNMENT WHERE EMPLOYEE_ID = ? AND ASSIGNMENT_DATE >= ? AND ASSIGNMENT_DATE <= ?",
+  get_e_assignments:
+    "SELECT * FROM WORK_ASSIGNMENT EMPLOYEE_ID = ? AND ASSIGNMENT_DATE = ?",
 };
 
 const insertStartShiftTimeSlot = (args) => {
@@ -93,7 +98,7 @@ const getEmployee_formatted = (args) => {
     var date2;
     var date3;
     var output;
-    const date_pattern = date.compile("MMM DD YYYY");
+    const date_pattern = date.compile("ddd, MMM DD YYYY");
     const query_date = date.compile("YYYY-MM-DD");
     const date_pattern_shift = date.compile("hh:mm A");
     db.query(
@@ -141,6 +146,23 @@ const getEmployee_formatted = (args) => {
   });
 };
 
+const get_payroll = (args, payroll_time) => {
+  var base_pay = 20;
+  if (args.TITLE == "general manager") {
+    return "N/A";
+  }
+  if (args.TITLE == "assistant manager" || args.TITLE == "crew lead") {
+    return (
+      payroll_time.othours * (1.5 * (base_pay + 5)) +
+      payroll_time.hours * (base_pay + 5)
+    );
+  } else {
+    return (
+      payroll_time.othours * (1.5 * base_pay) + payroll_time.hours * base_pay
+    );
+  }
+};
+
 const GeneratePDF = async (args) => {
   return new Promise(async (Resolve) => {
     var data = await getEmployee_formatted(args);
@@ -163,6 +185,10 @@ const GeneratePDF = async (args) => {
     employee_data[0].SHIFT_OTHOURS = TotalOTHours;
     employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
     employee_data[0].SHIFT_DAYS = Days;
+    employee_data[0].PAY = get_payroll(employee_data[0], {
+      othours: TotalOTHours,
+      hours: TotalHours,
+    });
 
     var templateSRC = Handlebars.compile(html);
     const input_data = { employeeData: data, employee: employee_data[0] };

@@ -5,6 +5,7 @@ const {PreviewRequestModel} = require('../request_model/preview_request_model')
 const {RemoveRequestModel} = require('../request_model/remove_s_request_model')
 const {assignRequestModel} = require('../request_model/assign_request_model')
 const {assignEditRequestModel} = require('../request_model/assign_edit_request_model')
+const {PreviewEditAssignmentRequestModel} = require('../request_model/preview_edit_assign_model')
 
 const pdf_request_model = (args, callback) => {
     return callback(pdfRequestModel(args));
@@ -34,6 +35,10 @@ const assign_edit = (args) => {
     return assignEditRequestModel(args);
 }
 
+const preview_edit_assign = (args) => {
+    return PreviewEditAssignmentRequestModel(args);
+}
+
 
 
 
@@ -44,3 +49,4 @@ exports.previewShift_Wrapper = preview_shift;
 exports.removeShift_Wrapper = remove_shift;
 exports.addAssignment_Wrapper = add_assignment;
 exports.editAssignment_Wrapper = assign_edit;
+exports.previewEditAssignment_wrapper = preview_edit_assign;

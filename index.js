@@ -33,6 +33,15 @@ server.use("/EmployeeResourcesAPI/GeneratePDF", (req, res, next) => {
     res.send("request invalid").end();
   }
 });
+server.use(
+  "/EmployeeResourcesAPI/FetchEmployeeAssignEntries",
+  (req, res, next) => {
+    request_model.preview_assign_edit(req.body, (data) => {
+      req.request_model = data;
+    });
+    next();
+  }
+);
 server.use("/EmployeeResourcesAPI/addAssignment", (req, res, next) => {
   request_model.add_assign(req.body, (data) => {
     req.request_model = data;
@@ -228,6 +237,12 @@ server.post(
 server.post("/EmployeeResourcesAPI/addAssignment", (req, res) => {
   Employee.add_assign(req.request_model, (data) => {});
   res.send({ status: "added" });
+});
+
+server.post("/EmployeeResourcesAPI/FetchEmployeeAssignEntries", (req, res) => {
+  Employee.prev_edit_assign(req.request_model, (data) => {
+    res.send(data);
+  });
 });
 
 //poll

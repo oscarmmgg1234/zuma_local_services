@@ -1,4 +1,4 @@
-const {pdfRequestModel_Wrapper, employeeRequestModel_Wrapper, previewShift_Wrapper, removeShift_Wrapper, addAssignment_Wrapper, editAssignment_Wrapper }
+const {pdfRequestModel_Wrapper, employeeRequestModel_Wrapper, previewShift_Wrapper, removeShift_Wrapper, addAssignment_Wrapper, editAssignment_Wrapper, previewEditAssignment_wrapper }
  = require('../models_wrapper/request_model_wrapper')
 
 class request{
@@ -19,6 +19,9 @@ class request{
     }
     assign_edit(args, callback){
         return callback(editAssignment_Wrapper(args));
+    }
+    preview_assign_edit(args, callback){
+        return callback(previewEditAssignment_wrapper(args));
     }
 }
 
