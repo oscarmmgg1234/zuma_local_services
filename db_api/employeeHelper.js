@@ -146,23 +146,6 @@ const getEmployee_formatted = (args) => {
   });
 };
 
-const get_payroll = (args, payroll_time) => {
-  var base_pay = 20;
-  if (args.TITLE == "general manager") {
-    return "N/A";
-  }
-  if (args.TITLE == "assistant manager" || args.TITLE == "crew lead") {
-    return (
-      payroll_time.othours * (1.5 * (base_pay + 5)) +
-      payroll_time.hours * (base_pay + 5)
-    );
-  } else {
-    return (
-      payroll_time.othours * (1.5 * base_pay) + payroll_time.hours * base_pay
-    );
-  }
-};
-
 const GeneratePDF = async (args) => {
   return new Promise(async (Resolve) => {
     var data = await getEmployee_formatted(args);
@@ -185,10 +168,6 @@ const GeneratePDF = async (args) => {
     employee_data[0].SHIFT_OTHOURS = TotalOTHours;
     employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
     employee_data[0].SHIFT_DAYS = Days;
-    employee_data[0].PAY = get_payroll(employee_data[0], {
-      othours: TotalOTHours,
-      hours: TotalHours,
-    });
 
     var templateSRC = Handlebars.compile(html);
     const input_data = { employeeData: data, employee: employee_data[0] };
