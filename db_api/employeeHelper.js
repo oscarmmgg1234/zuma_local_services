@@ -98,7 +98,7 @@ const getEmployee_formatted = (args) => {
     var date2;
     var date3;
     var output;
-    const date_pattern = date.compile("ddd, MMM DD YYYY");
+    const date_pattern = date.compile("ddd,  MMM DD YYYY");
     const query_date = date.compile("YYYY-MM-DD");
     const date_pattern_shift = date.compile("hh:mm A");
     db.query(
