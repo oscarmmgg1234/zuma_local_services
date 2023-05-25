@@ -356,7 +356,7 @@ const previewTransformStartShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 2);
+        const newStart = date.addDays(start, 1);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -411,7 +411,7 @@ const previewRemoveShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 2);
+        const newStart = date.addDays(start, 1);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -452,7 +452,7 @@ const previewRemoveShift = (args) => {
 const transformEndShift = (args) => {
   //add a remove rever function that will
   const date_pattern = date.compile("YYYY-MM-DD");
-  const start_date = new Date(args.date);
+  const start_date = date.addDays(new Date(args.date), -1);
   //const entry_date = date.addDays(start_date, -1);
 
   db.query(
@@ -478,7 +478,7 @@ const transformEndShift = (args) => {
 
 const transformStartShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
-  const start_date = new Date(args.date);
+  const start_date = date.addDays(new Date(args.date), -1);
   //const entry_date = date.addDays(start_date, -1);
 
   db.query(
@@ -508,12 +508,12 @@ const removeShift = (args) => {
   if (args.revert == false) {
     db.query(querys.remove_shift_log, [
       args.e_id,
-      date.format(new Date(args.date), date_pattern),
+      date.format(date.addDays(new Date(args.date), -1), date_pattern),
     ]);
   } else {
     db.query(querys.revert_remove_shift_log, [
       args.e_id,
-      date.format(new Date(args.date), date_pattern),
+      date.format(date.addDays(new Date(args.date), -1), date_pattern),
     ]);
   }
 };
