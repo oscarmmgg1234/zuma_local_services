@@ -147,6 +147,16 @@ tr{
     margin-top: 3px;
 }
 
+   .spacer {
+        height: 10px;
+    }
+    
+    .spacer-row td {
+        border: none;
+        padding: 0;
+        height: 10px;
+    }
+
 
 </style>
 </head>
@@ -184,6 +194,9 @@ tr{
         <td>{{this.SHIFT_END}}</td>
         <td>{{this.SHIFT_HOURS}}</td>
         <td>{{this.SHIFT_OTHOURS}}</td>
+    </tr>
+     <tr class="spacer-row">
+        <td colspan="5" class="spacer"></td>
     </tr>
     {{/each}}
 </table>
