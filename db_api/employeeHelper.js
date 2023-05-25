@@ -159,9 +159,11 @@ const getEmployee_formatted = (args) => {
                   ? hours > 40
                     ? fullTime.toFixed(2)
                     : hours.toFixed(2)
-                  : parseFloat("0.00"),
+                  : parseFloat("0.00").toFixed(2),
               SHIFT_OTHOURS:
-                val.VALID == 1 ? othours.toFixed(2) : parseFloat("0.00"),
+                val.VALID == 1
+                  ? othours.toFixed(2)
+                  : parseFloat("0.00").toFixed(2),
               SHIFT_DATE: date.format(date3, date_pattern),
             };
           }
