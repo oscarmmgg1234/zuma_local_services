@@ -187,8 +187,14 @@ const GeneratePDF = async (args) => {
     });
     const pattern = date.compile("MMM DD YYYY");
 
-    employee_data[0].SHIFT_START = date.format(args.range_start, pattern);
-    employee_data[0].SHIFT_END = date.format(args.range_end, pattern);
+    employee_data[0].SHIFT_START = date.format(
+      date.addDays(args.range_start, -1),
+      pattern
+    );
+    employee_data[0].SHIFT_END = date.format(
+      date.addDays(args.range_end, -1),
+      pattern
+    );
     employee_data[0].SHIFT_HOURS = TotalHours;
     employee_data[0].SHIFT_OTHOURS = TotalOTHours;
     employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
