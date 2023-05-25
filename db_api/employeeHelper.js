@@ -92,6 +92,7 @@ const getEmployeeInfo = (args) => {
 };
 
 const validate = (day) => {
+  var date_valid = date.compile("ddd");
   var validation = date.format(day, date_valid);
   if (validation == "Sat" || validation == "Sun") {
     return false;
