@@ -9,6 +9,7 @@ const { query } = require("express");
 const {
   employee,
 } = require("../workers/employee_interface/employee_interface");
+const { parse } = require("path");
 const req = new request();
 var html = fs.readFileSync("./html_templates/time_sheet.html", "utf8");
 
@@ -90,6 +91,21 @@ const getEmployeeInfo = (args) => {
   });
 };
 
+const validate = (day) => {
+  var validation = date.format(day, date_valid);
+  if (validation == "Sat" || validation == "Sun") {
+    return false;
+  }
+  return true;
+};
+
+const check_weekend_shift = (args) => {
+  var valid = date.compile("hh:mm A");
+  var date1 = date.format(args.date1, valid);
+  var date2 = date.format(args.date2, valid);
+  return date1 == date2 ? false : true;
+};
+
 const getEmployee_formatted = (args) => {
   return new Promise((resolve) => {
     var othours = 0;
@@ -123,11 +139,19 @@ const getEmployee_formatted = (args) => {
               ...val,
               SHIFT_START:
                 val.VALID == 1
-                  ? date.format(date1, date_pattern_shift)
+                  ? validate(date1)
+                    ? date.format(date1, date_pattern_shift)
+                    : check_weekend_shift({ date1, date2 })
+                    ? date.format(date1, date_pattern_shift)
+                    : "Weekend Off"
                   : "Called Off",
               SHIFT_END:
                 val.VALID == 1
-                  ? date.format(date2, date_pattern_shift)
+                  ? validate(date2)
+                    ? date.format(date2, date_pattern_shift)
+                    : check_weekend_shift({ date1, date2 })
+                    ? date.format(date2, date_pattern_shift)
+                    : "Weekend Off"
                   : "Called Off",
               SHIFT_HOURS:
                 val.VALID == 1
@@ -156,7 +180,7 @@ const GeneratePDF = async (args) => {
     data.forEach((val) => {
       TotalHours += parseFloat(val.SHIFT_HOURS);
       TotalOTHours += parseFloat(val.SHIFT_OTHOURS);
-      if (val.VALID == 1) {
+      if (val.VALID == 1 && parseFloat(val.SHIFT_HOURS) > 0) {
         Days = Days + 1;
       }
     });
