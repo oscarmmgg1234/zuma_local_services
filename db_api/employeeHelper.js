@@ -299,7 +299,7 @@ const previewTransformEndShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 2);
+        const newStart = date.addDays(start, 1);
         const date_res = data.map((dateObj) => {
           if (
             date
