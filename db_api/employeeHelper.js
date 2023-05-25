@@ -449,7 +449,7 @@ const previewRemoveShift = (args) => {
 const transformEndShift = (args) => {
   //add a remove rever function that will
   const date_pattern = date.compile("YYYY-MM-DD");
-  const start_date = date.addDays(new Date(args.date), -1);
+  const start_date = new Date(args.date);
   //const entry_date = date.addDays(start_date, -1);
 
   db.query(
