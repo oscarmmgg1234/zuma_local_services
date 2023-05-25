@@ -141,6 +141,17 @@ th{
 td{
     font-size: 15px;
     font-weight: 400;
+    position: relative;
+}
+td:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  height: 100%;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.1); /* Adjust transparency as needed */
 }
 
 tr{
