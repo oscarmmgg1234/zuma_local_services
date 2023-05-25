@@ -121,8 +121,8 @@ const getEmployee_formatted = (args) => {
     db.query(
       querys.get_shift_log,
       [
-        date.format(args.range_start, query_date),
-        date.format(args.range_end, query_date),
+        date.format(date.addDays(args.range_start, -1), query_date),
+        date.format(date.addDays(args.range_end, -1), query_date),
         args.e_id,
       ],
       function (err, result, fields) {
