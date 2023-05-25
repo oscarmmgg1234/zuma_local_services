@@ -121,8 +121,8 @@ const getEmployee_formatted = (args) => {
     db.query(
       querys.get_shift_log,
       [
-        date.format(date.addDays(args.range_start, -1), query_date),
-        date.format(date.addDays(args.range_end, -1), query_date),
+        date.format(args.range_start, query_date),
+        date.format(args.range_end, query_date),
         args.e_id,
       ],
       function (err, result, fields) {
@@ -190,14 +190,8 @@ const GeneratePDF = async (args) => {
     });
     const pattern = date.compile("MMM DD YYYY");
 
-    employee_data[0].SHIFT_START = date.format(
-      date.addDays(args.range_start, -1),
-      pattern
-    );
-    employee_data[0].SHIFT_END = date.format(
-      date.addDays(args.range_end, -1),
-      pattern
-    );
+    employee_data[0].SHIFT_START = date.format(args.range_start, pattern);
+    employee_data[0].SHIFT_END = date.format(args.range_end, pattern);
     employee_data[0].SHIFT_HOURS = TotalHours;
     employee_data[0].SHIFT_OTHOURS = TotalOTHours;
     employee_data[0].NAME = employee_data[0].NAME.toUpperCase();
@@ -302,7 +296,7 @@ const previewTransformEndShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -359,7 +353,7 @@ const previewTransformStartShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -414,7 +408,7 @@ const previewRemoveShift = (args) => {
       ],
       (err, result) => {
         const data = Object.values(JSON.parse(JSON.stringify(result)));
-        const newStart = date.addDays(start, 1);
+        const newStart = date.addDays(start, 2);
         const date_res = data.map((dateObj) => {
           if (
             date
@@ -481,7 +475,7 @@ const transformEndShift = (args) => {
 
 const transformStartShift = (args) => {
   const date_pattern = date.compile("YYYY-MM-DD");
-  const start_date = date.addDays(new Date(args.date), -1);
+  const start_date = new Date(args.date);
   //const entry_date = date.addDays(start_date, -1);
 
   db.query(
@@ -511,12 +505,12 @@ const removeShift = (args) => {
   if (args.revert == false) {
     db.query(querys.remove_shift_log, [
       args.e_id,
-      date.format(date.addDays(new Date(args.date), -1), date_pattern),
+      date.format(new Date(args.date), date_pattern),
     ]);
   } else {
     db.query(querys.revert_remove_shift_log, [
       args.e_id,
-      date.format(date.addDays(new Date(args.date), -1), date_pattern),
+      date.format(new Date(args.date), date_pattern),
     ]);
   }
 };
