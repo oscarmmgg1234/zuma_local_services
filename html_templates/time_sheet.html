@@ -154,6 +154,16 @@ td:after {
   width: 1px;
   background-color: rgba(0, 0, 0, 0.3); /* Adjust transparency as needed */
 }
+td::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  height: 100%;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.3); /* Adjust transparency as needed */
+}
 
 tr{
     margin-top: 3px;
